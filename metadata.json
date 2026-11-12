@@ -1,0 +1,6 @@
+{
+  "name": "Rakshak Anti-Theft & Intruder Capture",
+  "description": "Android Anti-Theft application featuring mobile number login, permission consent manager, lock screen intruder photo capture, GPS tracking, siren alarm, and AI incident analysis.",
+  "requestFramePermissions": ["camera", "geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
