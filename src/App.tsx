@@ -45,7 +45,7 @@ const DEFAULT_INTRUDER_SAMPLE_PHOTO = 'data:image/svg+xml;utf8,' + encodeURIComp
 export default function App() {
   // Language (Hindi default per user's prompt, switchable to English)
   const [lang, setLang] = useState<Language>('hi');
-  const [viewMode, setViewMode] = useState<'mobile' | 'dashboard'>('mobile');
+  const [viewMode, setViewMode] = useState<'mobile' | 'dashboard'>('dashboard');
   const [activeStep, setActiveStep] = useState<number>(1);
   const [isLockScreenOpen, setIsLockScreenOpen] = useState(false);
   const [isSirenActive, setIsSirenActive] = useState(false);
