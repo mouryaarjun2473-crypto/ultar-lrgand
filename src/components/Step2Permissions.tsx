@@ -103,11 +103,15 @@ export const Step2Permissions: React.FC<Step2Props> = ({
     });
   };
 
+  const [consentError, setConsentError] = useState('');
+
   const handleAcceptConsent = () => {
     if (!consentCheck1 || !consentCheck2 || !consentCheck3) {
-      alert(lang === 'hi' ? 'कृपया आगे बढ़ने से पहले सभी 3 सहमति बिंदुओं को चिह्नित करें।' : 'Please acknowledge all 3 consent conditions to proceed.');
+      setConsentError(lang === 'hi' ? 'कृपया आगे बढ़ने से पहले सभी 3 सहमति बिंदुओं को चिह्नित करें।' : 'Please acknowledge all 3 consent conditions to proceed.');
+      sound.playErrorBuzz();
       return;
     }
+    setConsentError('');
 
     const timestamp = new Date().toLocaleString();
     onUpdatePermissions({
@@ -406,6 +410,12 @@ export const Step2Permissions: React.FC<Step2Props> = ({
             </span>
           </label>
         </div>
+
+        {consentError && (
+          <p className="text-xs text-red-400 bg-red-950/60 border border-red-800 p-2.5 rounded-xl">
+            {consentError}
+          </p>
+        )}
 
         <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
           {!permissions.userConsentAccepted ? (

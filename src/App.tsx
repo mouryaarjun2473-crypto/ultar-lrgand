@@ -16,9 +16,31 @@ import {
   IntruderIncident
 } from './types';
 import { t } from './utils/translations';
+import { safeStorage } from './utils/storage';
 import { sound } from './utils/audio';
-import { capturePhotoFromCamera, getCurrentDeviceLocation, generateSimulatedIntruderPhoto } from './utils/camera';
+import { capturePhotoFromCamera, getCurrentDeviceLocation } from './utils/camera';
 import { Shield, Sparkles, CheckCircle2, AlertOctagon } from 'lucide-react';
+
+const DEFAULT_INTRUDER_SAMPLE_PHOTO = 'data:image/svg+xml;utf8,' + encodeURIComponent(`
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" style="background:#090d16">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#bg)"/>
+  <ellipse cx="320" cy="420" rx="160" ry="90" fill="#334155"/>
+  <ellipse cx="320" cy="230" rx="90" ry="115" fill="#475569"/>
+  <rect x="210" y="100" width="220" height="260" fill="none" stroke="#ef4444" stroke-width="3" stroke-dasharray="8,4"/>
+  <rect x="210" y="72" width="160" height="24" fill="#ef4444" rx="4"/>
+  <text x="220" y="88" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold">TARGET: INTRUDER</text>
+  <text x="25" y="40" fill="#22c55e" font-family="monospace" font-size="13">CAM: FRONT_ULTRAWIDE [ARMED]</text>
+  <text x="25" y="62" fill="#22c55e" font-family="monospace" font-size="13">ALERT: WRONG_PIN_ATTEMPT</text>
+  <text x="380" y="40" fill="#f59e0b" font-family="monospace" font-size="13">LOC: 28.6139° N, 77.2090° E</text>
+  <text x="380" y="62" fill="#ef4444" font-family="monospace" font-size="13">SIREN: ARMED_MAX</text>
+</svg>
+`);
 
 export default function App() {
   // Language (Hindi default per user's prompt, switchable to English)
@@ -32,7 +54,7 @@ export default function App() {
 
   // User Profile State
   const [user, setUser] = useState<UserProfile>(() => {
-    const saved = localStorage.getItem('rakshak_user');
+    const saved = safeStorage.getItem('rakshak_user');
     if (saved) {
       try { return JSON.parse(saved); } catch {}
     }
@@ -57,7 +79,7 @@ export default function App() {
 
   // Linked Device State
   const [device, setDevice] = useState<LinkedDevice>(() => {
-    const saved = localStorage.getItem('rakshak_device');
+    const saved = safeStorage.getItem('rakshak_device');
     if (saved) {
       try { return JSON.parse(saved); } catch {}
     }
@@ -78,7 +100,7 @@ export default function App() {
 
   // Permission Status
   const [permissions, setPermissions] = useState<PermissionStatus>(() => {
-    const saved = localStorage.getItem('rakshak_permissions');
+    const saved = safeStorage.getItem('rakshak_permissions');
     if (saved) {
       try { return JSON.parse(saved); } catch {}
     }
@@ -96,7 +118,7 @@ export default function App() {
 
   // Anti-Theft Config
   const [config, setConfig] = useState<AntiTheftConfig>(() => {
-    const saved = localStorage.getItem('rakshak_config');
+    const saved = safeStorage.getItem('rakshak_config');
     if (saved) {
       try { return JSON.parse(saved); } catch {}
     }
@@ -116,17 +138,15 @@ export default function App() {
 
   // Intruder Incidents
   const [incidents, setIncidents] = useState<IntruderIncident[]>(() => {
-    const saved = localStorage.getItem('rakshak_incidents');
+    const saved = safeStorage.getItem('rakshak_incidents');
     if (saved) {
       try { return JSON.parse(saved); } catch {}
     }
-    // Initial sample incident for immediate demonstration
-    const sampleImg = generateSimulatedIntruderPhoto();
     return [
       {
         id: 'INC-748921',
         timestamp: new Date(Date.now() - 3600000 * 2).toISOString(),
-        imageData: sampleImg,
+        imageData: DEFAULT_INTRUDER_SAMPLE_PHOTO,
         failedAttempts: 2,
         enteredPin: '1234',
         location: {
@@ -155,25 +175,25 @@ export default function App() {
     ];
   });
 
-  // Persistence
+  // Safe Persistence
   useEffect(() => {
-    localStorage.setItem('rakshak_user', JSON.stringify(user));
+    safeStorage.setItem('rakshak_user', JSON.stringify(user));
   }, [user]);
 
   useEffect(() => {
-    localStorage.setItem('rakshak_device', JSON.stringify(device));
+    safeStorage.setItem('rakshak_device', JSON.stringify(device));
   }, [device]);
 
   useEffect(() => {
-    localStorage.setItem('rakshak_permissions', JSON.stringify(permissions));
+    safeStorage.setItem('rakshak_permissions', JSON.stringify(permissions));
   }, [permissions]);
 
   useEffect(() => {
-    localStorage.setItem('rakshak_config', JSON.stringify(config));
+    safeStorage.setItem('rakshak_config', JSON.stringify(config));
   }, [config]);
 
   useEffect(() => {
-    localStorage.setItem('rakshak_incidents', JSON.stringify(incidents));
+    safeStorage.setItem('rakshak_incidents', JSON.stringify(incidents));
   }, [incidents]);
 
   const handleUpdateUser = (updated: Partial<UserProfile>) => {

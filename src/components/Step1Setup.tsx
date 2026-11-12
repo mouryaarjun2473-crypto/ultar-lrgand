@@ -94,12 +94,16 @@ export const Step1Setup: React.FC<Step1Props> = ({
     }
   };
 
+  const [saveError, setSaveError] = useState('');
+
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
     if (pin.length !== 4) {
-      alert(lang === 'hi' ? 'सुरक्षा पिन ठीक 4 अंकों का होना चाहिए' : 'PIN must be exactly 4 digits');
+      setSaveError(lang === 'hi' ? 'सुरक्षा पिन ठीक 4 अंकों का होना चाहिए' : 'PIN must be exactly 4 digits');
+      sound.playErrorBuzz();
       return;
     }
+    setSaveError('');
 
     onUpdateUser({
       name: fullName,

@@ -73,11 +73,9 @@ export const IntruderVault: React.FC<IntruderVaultProps> = ({
           {incidents.length > 0 && (
             <button
               onClick={() => {
-                if (confirm(lang === 'hi' ? 'क्या आप सभी घटनाओं को हटाना चाहते हैं?' : 'Clear all intruder logs?')) {
-                  onClearIncidents();
-                }
+                onClearIncidents();
               }}
-              className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-red-400 bg-slate-800/80 hover:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700 cursor-pointer self-start sm:self-auto"
+              className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-red-400 bg-slate-800/80 hover:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700 cursor-pointer self-start sm:self-auto transition"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>{lang === 'hi' ? 'लॉग साफ़ करें' : 'Clear Log'}</span>
